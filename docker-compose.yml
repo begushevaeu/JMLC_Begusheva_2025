@@ -1,0 +1,73 @@
+services:
+  db:
+    image: postgres:13
+    container_name: shamlock_db
+    restart: always
+    env_file:
+      - .env.docker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # Exposing on 5433 to avoid conflict with local postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aml_project"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:4.4
+    container_name: shamlock_neo4j
+    restart: always
+    environment:
+      NEO4J_AUTH: neo4j/84958495
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Docker/api.Dockerfile
+    container_name: shamlock_api
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./app:/app/app
+      - ./shamlock_model:/app/shamlock_model
+      - ./config.json:/app/config.json
+      - ./Datasets:/app/Datasets
+      - ./alembic:/app/alembic
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Docker/dashboard.Dockerfile
+    container_name: shamlock_dashboard
+    restart: always
+    depends_on:
+      - api
+      - neo4j
+    ports:
+      - "8501:8501"
+    environment:
+      API_BASE_URL: http://api:8000
+    volumes:
+      - ./dashboard.py:/app/dashboard.py
+      - ./shamlock_model:/app/shamlock_model
+      - ./config.json:/app/config.json
+      - ./app/neo4j_utils.py:/app/app/neo4j_utils.py
+
+volumes:
+  postgres_data:
+  neo4j_data:

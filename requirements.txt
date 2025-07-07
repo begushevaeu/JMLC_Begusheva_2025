@@ -1,6 +1,24 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+fastapi
+uvicorn[standard]
+neo4j
+streamlit
+streamlit-agraph
+requests
+sqlalchemy
+psycopg2-binary
+alembic
+python-dotenv
+pydantic
+apscheduler
+
+# Зависимости для GNN модели
 torch
-torch_geometric
+torchvision
+torchaudio
+torch-geometric
 pandas
-numpy
-scikit-learn
-matplotlib
+numpy==1.24.4
+scikit-learn==1.2.2
+matplotlib==3.7.0
