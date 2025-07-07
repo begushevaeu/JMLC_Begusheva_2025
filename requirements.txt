@@ -1,24 +1,31 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 
-fastapi
-uvicorn[standard]
-neo4j
-streamlit
-streamlit-agraph
-requests
-sqlalchemy
-psycopg2-binary
-alembic
-python-dotenv
-pydantic
-apscheduler
+# --- Core Application ---
+fastapi==0.115.14
+uvicorn[standard]==0.35.0
+SQLAlchemy==2.0.41
+alembic==1.16.2
+psycopg2-binary==2.9.10
+python-dotenv==1.1.1
+pydantic==2.11.7
+requests==2.32.4
+apscheduler==3.10.4
 
-# Зависимости для GNN модели
-torch
-torchvision
-torchaudio
-torch-geometric
-pandas
+# --- Dashboard ---
+streamlit==1.46.1
+streamlit-agraph==0.0.45
+
+# --- Data & ML ---
+pandas==2.3.0
 numpy==1.24.4
 scikit-learn==1.2.2
-matplotlib==3.7.0
+matplotlib==3.10.3
+
+# --- Graph Database ---
+neo4j==5.28.1
+
+# --- PyTorch & GNN ---
+torch==2.7.1
+torchvision==0.22.1
+torchaudio==2.7.1
+torch-geometric==2.6.1
