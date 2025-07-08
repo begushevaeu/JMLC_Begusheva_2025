@@ -65,7 +65,7 @@
 
 ## 🎬 Презентация работы проекта
 
-[![Просмотр](https://disk.360.yandex.ru/d/Udi4lSIYXYCwyw)]
+URL: https://disk.360.yandex.ru/d/Udi4lSIYXYCwyw
 
 ---
 
