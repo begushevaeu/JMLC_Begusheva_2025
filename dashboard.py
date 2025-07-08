@@ -410,7 +410,8 @@ def display_transactions_tab(df: pd.DataFrame):
     other_cols = [col for col in df_display.columns if col not in final_cols]
     final_cols.extend(other_cols)
 
-    df_to_show = df_display[final_cols]
+    df_to_show = df_display[final_cols].copy()
+    df_to_show.index = range(1, len(df_to_show) + 1)
 
     format_dict = {}
     if 'Вероятность мошенничества' in df_to_show.columns:
@@ -420,6 +421,16 @@ def display_transactions_tab(df: pd.DataFrame):
         format_dict['Размер транзакции'] = '{:,.2f}'
 
     st.dataframe(df_to_show.style.format(format_dict), use_container_width=True)
+
+    st.caption("""
+    **Описание типов операций (Payment Type)**
+    - **Credit card** – операции с использованием кредитной карты.
+    - **Debit card** – операции с использованием дебетовой карты.
+    - **Cash** – операции с наличными (внесение и снятие средств).
+    - **ACH (Automated Clearing House)** – переводы через автоматизированную клиринговую палату, включая регулярные платежи и переводы между счетами.
+    - **Cross-border** – трансграничные переводы, включая международные операции и конвертацию валют.
+    - **Cheque** – операции, осуществлённые с использованием бумажных чеков.
+    """)
 
 def display_alerts_tab(df: pd.DataFrame):
     """Отображает таблицу транзакций с градиентной расцветкой по риску."""
@@ -451,14 +462,10 @@ def display_alerts_tab(df: pd.DataFrame):
         display_df['Вероятность мошенничества'] = float('nan')
 
     # 3. Переименование колонок
-    display_df.rename(columns={
-        'sender': 'Отправитель', 
-        'receiver': 'Получатель',
-        'is_fraud': 'Отмывка'
-    }, inplace=True)
+    display_df.rename(columns={'sender': 'Отправитель', 'receiver': 'Получатель'}, inplace=True)
 
     # --- Отображение таблицы со стилем ---
-    final_cols_order = ['Отправитель', 'Получатель', 'Дата', 'Время', 'Вероятность мошенничества', 'Отмывка']
+    final_cols_order = ['Отправитель', 'Получатель', 'Дата', 'Время', 'Вероятность мошенничества']
     cols_to_display = [col for col in final_cols_order if col in display_df.columns]
     
     df_to_show = display_df[cols_to_display]
