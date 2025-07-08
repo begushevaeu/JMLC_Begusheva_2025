@@ -74,7 +74,7 @@ alembic.ini
 
 # Project-specific folders to ignore
 
-/Product_prototype/
+
 /shamlock_model/artifacts/
 
 # Other
