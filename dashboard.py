@@ -380,9 +380,10 @@ def display_transactions_tab(df: pd.DataFrame):
     df_display.drop(columns=existing_cols_to_drop, inplace=True)
 
     rename_map = {
-        'sender': 'Отправитель',
-        'receiver': 'Получатель',
+        'sender': 'Аккаунт отправителя',
+        'receiver': 'Аккаунт получателя',
         'amount': 'Размер транзакции',
+        'transaction_type': 'Тип',
         'payment_currency_iso': 'Валюта отправления',
         'received_currency_iso': 'Валюта получения',
         'payment_type': 'Тип операции',
@@ -394,9 +395,12 @@ def display_transactions_tab(df: pd.DataFrame):
     df_display.rename(columns=rename_map, inplace=True)
 
     start_cols = [
-        'Отправитель', 'Получатель', 'Дата', 'Время', 'Размер транзакции',
-        'Валюта отправления', 'Валюта получения', 'Тип операции',
-        'Страна отправления', 'Страна получения'
+        'Аккаунт отправителя',
+        'Аккаунт получателя',
+        'Дата',
+        'Время',
+        'Размер транзакции',
+        'Тип'
     ]
     end_col = 'Отмывка'
 
