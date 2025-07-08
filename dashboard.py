@@ -375,7 +375,11 @@ def display_transactions_tab(df: pd.DataFrame):
             df_display['Дата'] = 'Error'
             df_display['Время'] = 'Error'
 
-    cols_to_drop = ['id', 'from_account_id', 'to_account_id', 'fraud_probability', timestamp_col]
+    # Гарантированно удаляем все колонки, которые не должны отображаться, включая разные их варианты
+    cols_to_drop = [
+        'id', 'from_account_id', 'to_account_id', 'fraud_probability', timestamp_col, 
+        'sender', 'receiver', 'risk_score', 'sender_account', 'receiver_account', 'is_fraud'
+    ]
     existing_cols_to_drop = [col for col in cols_to_drop if col in df_display.columns]
     df_display.drop(columns=existing_cols_to_drop, inplace=True)
 
@@ -389,8 +393,6 @@ def display_transactions_tab(df: pd.DataFrame):
         'payment_type': 'Тип операции',
         'sender_bank_location': 'Страна отправления',
         'receiver_bank_location': 'Страна получения',
-        'is_fraud': 'Отмывка',
-        'risk_score': 'Вероятность мошенничества'
     }
     df_display.rename(columns=rename_map, inplace=True)
 
@@ -402,13 +404,11 @@ def display_transactions_tab(df: pd.DataFrame):
         'Размер транзакции',
         'Тип'
     ]
-    end_col = 'Отмывка'
+    end_col = None
 
     final_cols = [col for col in start_cols if col in df_display.columns]
-    other_cols = [col for col in df_display.columns if col not in final_cols and col != end_col]
+    other_cols = [col for col in df_display.columns if col not in final_cols]
     final_cols.extend(other_cols)
-    if end_col in df_display.columns:
-        final_cols.append(end_col)
 
     df_to_show = df_display[final_cols]
 
@@ -451,10 +451,14 @@ def display_alerts_tab(df: pd.DataFrame):
         display_df['Вероятность мошенничества'] = float('nan')
 
     # 3. Переименование колонок
-    display_df.rename(columns={'sender': 'Отправитель', 'receiver': 'Получатель'}, inplace=True)
+    display_df.rename(columns={
+        'sender': 'Отправитель', 
+        'receiver': 'Получатель',
+        'is_fraud': 'Отмывка'
+    }, inplace=True)
 
     # --- Отображение таблицы со стилем ---
-    final_cols_order = ['Отправитель', 'Получатель', 'Дата', 'Время', 'Вероятность мошенничества']
+    final_cols_order = ['Отправитель', 'Получатель', 'Дата', 'Время', 'Вероятность мошенничества', 'Отмывка']
     cols_to_display = [col for col in final_cols_order if col in display_df.columns]
     
     df_to_show = display_df[cols_to_display]
